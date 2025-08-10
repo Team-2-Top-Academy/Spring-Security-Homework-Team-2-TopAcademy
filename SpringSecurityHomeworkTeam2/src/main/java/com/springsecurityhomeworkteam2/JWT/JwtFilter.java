@@ -18,9 +18,9 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-    private final JwtUtil jwtUtil; // Пример зависимости (если есть)
+    private final JwtUtil jwtUtil;
 
-    // Внедряем зависимости через конструктор
+
     public JwtFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -30,12 +30,13 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-        // Логика обработки JWT-токена
+
         String token = extractToken(request);
         if (token != null && jwtUtil.validateToken(token)) {
             String username = jwtUtil.extractUsername(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            // Создаем аутентифицированный объект
+
+
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
